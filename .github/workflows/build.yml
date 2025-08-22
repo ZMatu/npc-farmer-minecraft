@@ -32,7 +32,7 @@ jobs:
       - name: Install AuthLib in local Maven
         run: |
           mvn install:install-file \
-            -Dfile=authlib-3.4.1.jar \
+            -Dfile=authlib.jar \
             -DgroupId=com.mojang \
             -DartifactId=authlib \
             -Dversion=3.4.1 \
