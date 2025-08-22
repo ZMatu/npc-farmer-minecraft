@@ -35,7 +35,7 @@ jobs:
             -Dfile=authlib.jar \
             -DgroupId=com.mojang \
             -DartifactId=authlib \
-            -Dversion=3.4.1 \
+            -Dversion=3.13.56 \
             -Dpackaging=jar
 
       - name: Build with Maven
