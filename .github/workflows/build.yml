@@ -29,6 +29,17 @@ jobs:
             -Dversion=5.3.0 \
             -Dpackaging=jar
 
+      - name: Download AuthLib
+        run: wget -O authlib-3.4.1.jar https://repo1.maven.org/maven2/com/mojang/authlib/3.4.1/authlib-3.4.1.jar
+
+      - name: Install AuthLib in local Maven
+        run: |
+          mvn install:install-file \
+            -Dfile=authlib-3.4.1.jar \
+            -DgroupId=com.mojang \
+            -DartifactId=authlib \
+            -Dversion=3.4.1 \
+            -Dpackaging=jar
 
       - name: Build with Maven
         run: mvn clean package
@@ -38,4 +49,3 @@ jobs:
         with:
           name: FakePlayerPlugin
           path: target/*.jar
-
