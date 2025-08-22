@@ -24,13 +24,14 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ProtocolLib desde Spigot repo -->
+        <!-- ProtocolLib -->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>5.3.0</version>
             <scope>provided</scope>
         </dependency>
+    </dependencies>
 
     <repositories>
         <repository>
@@ -42,4 +43,5 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
+
 </project>
