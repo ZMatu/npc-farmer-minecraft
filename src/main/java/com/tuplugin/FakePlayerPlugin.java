@@ -74,40 +74,41 @@ public class FakePlayerPlugin extends JavaPlugin {
         return false;
     }
 
-    private void spawnFakePlayer(Location loc, String name, SkinData skin) {
+   private void spawnFakePlayer(Location loc, String name, SkinData skin) {
+    try {
         GameProfile profile = new GameProfile(UUID.randomUUID(), name);
         profile.getProperties().put("textures", new Property("textures", skin.value, skin.signature));
 
         WrappedGameProfile wrappedProfile = WrappedGameProfile.fromHandle(profile);
 
-        try {
-            // Enviar PLAYER_INFO
-            PacketContainer addPlayer = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
-            addPlayer.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
-            addPlayer.getPlayerInfoDataLists().write(0,
-                    Collections.singletonList(new PlayerInfoData(
-                            wrappedProfile,
-                            0,
-                            EnumWrappers.NativeGameMode.SURVIVAL,
-                            WrappedChatComponent.fromText(profile.getName())
-                    ))
-            );
-            protocolManager.broadcastServerPacket(addPlayer);
+        // PLAYER_INFO packet
+        PacketContainer infoPacket = protocolManager.createPacket(PacketType.Play.Server.PLAYER_INFO);
+        infoPacket.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
 
-            // Enviar NAMED_ENTITY_SPAWN con writeDefaults
-            PacketContainer spawn = protocolManager.createPacket(PacketType.Play.Server.NAMED_ENTITY_SPAWN);
-            spawn.getModifier().writeDefaults();
-            spawn.getUUIDs().write(0, profile.getId());
-            spawn.getDoubles().write(0, loc.getX());
-            spawn.getDoubles().write(1, loc.getY());
-            spawn.getDoubles().write(2, loc.getZ());
+        List<PlayerInfoData> data = new ArrayList<>();
+        data.add(new PlayerInfoData(
+                wrappedProfile,
+                20, // latency dummy
+                EnumWrappers.NativeGameMode.SURVIVAL,
+                WrappedChatComponent.fromText(name)
+        ));
 
-            Bukkit.getScheduler().runTask(this, () -> protocolManager.broadcastServerPacket(spawn));
+        infoPacket.getPlayerInfoDataLists().write(0, data);
+        protocolManager.broadcastServerPacket(infoPacket);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // NAMED_ENTITY_SPAWN packet
+        PacketContainer spawnPacket = protocolManager.createPacket(PacketType.Play.Server.NAMED_ENTITY_SPAWN);
+        spawnPacket.getUUIDs().write(0, profile.getId());
+        spawnPacket.getDoubles().write(0, loc.getX());
+        spawnPacket.getDoubles().write(1, loc.getY());
+        spawnPacket.getDoubles().write(2, loc.getZ());
+
+        protocolManager.broadcastServerPacket(spawnPacket);
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     private record SkinData(String value, String signature) {}
 }
