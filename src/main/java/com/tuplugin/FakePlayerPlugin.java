@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -57,13 +58,18 @@ public class FakePlayerPlugin extends JavaPlugin {
     private void spawnFakePlayer(Location loc, String name, SkinData skin) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), name);
         profile.getProperties().put("textures", new Property("textures", skin.value, skin.signature));
+
+        // Convertir GameProfile a WrappedGameProfile
+        WrappedGameProfile wrappedProfile = WrappedGameProfile.fromHandle(profile);
+
         try {
             PacketContainer addPlayer = protocolManager.createPacket(
                     com.comphenix.protocol.PacketType.Play.Server.PLAYER_INFO);
             addPlayer.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
             addPlayer.getPlayerInfoDataLists().write(0,
                     Collections.singletonList(new PlayerInfoData(
-                            profile, 0, EnumWrappers.NativeGameMode.SURVIVAL,
+                            wrappedProfile, 0,
+                            EnumWrappers.NativeGameMode.SURVIVAL,
                             WrappedChatComponent.fromText(profile.getName()))));
             protocolManager.broadcastServerPacket(addPlayer);
 
