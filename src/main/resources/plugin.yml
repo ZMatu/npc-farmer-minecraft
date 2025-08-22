@@ -5,7 +5,7 @@ api-version: 1.21
 commands:
   createnpc:
     description: Crea un NPC en tu ubicación
-    usage: /createnpc <nombre>
+    usage: /createnpc <nombre> [skin]
     permission: npcfarmer.create
   removenpc:
     description: Elimina un NPC por nombre
