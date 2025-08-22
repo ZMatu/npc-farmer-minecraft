@@ -1,0 +1,27 @@
+name: NPCFarmer
+version: 1.0
+main: com.zmatu.npcfarmer.NPCFarmer
+api-version: 1.21
+commands:
+  createnpc:
+    description: Crea un NPC en tu ubicación
+    usage: /createnpc <nombre>
+    permission: npcfarmer.create
+  removenpc:
+    description: Elimina un NPC por nombre
+    usage: /removenpc <nombre>
+    permission: npcfarmer.remove
+  listnpcs:
+    description: Lista todos los NPCs creados
+    usage: /listnpcs
+    permission: npcfarmer.list
+permissions:
+  npcfarmer.create:
+    description: Permite crear NPCs
+    default: op
+  npcfarmer.remove:
+    description: Permite eliminar NPCs
+    default: op
+  npcfarmer.list:
+    description: Permite listar NPCs
+    default: op
