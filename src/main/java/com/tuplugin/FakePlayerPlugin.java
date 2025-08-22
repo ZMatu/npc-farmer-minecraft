@@ -8,14 +8,12 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,17 +57,14 @@ public class FakePlayerPlugin extends JavaPlugin {
         GameProfile profile = new GameProfile(UUID.randomUUID(), name);
         profile.getProperties().put("textures", new Property("textures", skin.value, skin.signature));
 
-        // Convertir GameProfile a WrappedGameProfile
-        WrappedGameProfile wrappedProfile = WrappedGameProfile.fromHandle(profile);
-
+        // Se quita InvocationTargetException porque no se lanza en la versión actual de ProtocolLib
         try {
             PacketContainer addPlayer = protocolManager.createPacket(
                     com.comphenix.protocol.PacketType.Play.Server.PLAYER_INFO);
             addPlayer.getPlayerInfoAction().write(0, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
             addPlayer.getPlayerInfoDataLists().write(0,
                     Collections.singletonList(new PlayerInfoData(
-                            wrappedProfile, 0,
-                            EnumWrappers.NativeGameMode.SURVIVAL,
+                            profile, 0, EnumWrappers.NativeGameMode.SURVIVAL,
                             WrappedChatComponent.fromText(profile.getName()))));
             protocolManager.broadcastServerPacket(addPlayer);
 
@@ -81,7 +76,7 @@ public class FakePlayerPlugin extends JavaPlugin {
             spawn.getDoubles().write(2, loc.getZ());
             protocolManager.broadcastServerPacket(spawn);
 
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
